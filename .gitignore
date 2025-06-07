@@ -1,0 +1,14 @@
+# Java (Spring Boot)
+backend/target/
+backend/.idea/
+backend/*.iml
+
+# Node.js (Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/.env
+frontend/.DS_Store
+
+# Global
+*.log
+.env

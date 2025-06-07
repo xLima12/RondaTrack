@@ -1,0 +1,11 @@
+services:
+  postgres:
+    container_name: ronda_track_postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=ronda_track_db
+      - POSTGRES_USER=ronda_track_user
+      - POSTGRES_PASSWORD=ronda_track_password
+      - POSTGRES_URL=jdbc:postgresql://localhost:5432/ronda_track_db
+    ports:
+      - 5432:5432
