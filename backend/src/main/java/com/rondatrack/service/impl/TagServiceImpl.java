@@ -4,10 +4,12 @@ import com.rondatrack.model.Tag;
 import com.rondatrack.repository.TagRepository;
 import com.rondatrack.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class TagServiceImpl implements TagService {
 
     @Autowired
