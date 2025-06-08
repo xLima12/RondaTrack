@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
-        return new AuthResponse(jwtUtil.generateToken(user.getEmail()));
+        return new AuthResponse(jwtUtil.generateToken(user.getEmail(), user.getRole()));
     }
 
     @Override
@@ -40,6 +40,6 @@ public class AuthServiceImpl implements AuthService {
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Usuário ou senha incorreto");
         }
-        return new AuthResponse(jwtUtil.generateToken(user.getEmail()));
+        return new AuthResponse(jwtUtil.generateToken(user.getEmail(), user.getRole()));
     }
 }
