@@ -1,5 +1,7 @@
 package com.rondatrack.service;
 
+import com.rondatrack.dto.DeviceRequest;
+import com.rondatrack.dto.DeviceResponse;
 import com.rondatrack.model.Device;
 import com.rondatrack.model.User;
 import com.rondatrack.repository.DeviceRepository;
@@ -20,26 +22,22 @@ public class DeviceService {
         this.userRepository = userRepository;
     }
 
-    public Device createDevice(String code, String name, String email) {
-        User user = userRepository.findByEmail(email)
+    public void create(DeviceRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
         Device device = new Device();
-        device.setCode(code);
-        device.setName(name);
+        device.setCode(request.getCode());
+        device.setName(request.getName());
         device.setUser(user);
-        return deviceRepository.save(device);
+
+        deviceRepository.save(device);
     }
 
-    public List<Device> listAll(String email, boolean isAdmin) {
-        if(isAdmin) return deviceRepository.findAll();
-        User user = userRepository.findByEmail(email).orElseThrow();
+    public List<DeviceResponse> listAll() {
         return deviceRepository.findAll().stream()
-                .filter(d -> d.getUser().getId().equals(user.getId()))
+                .map(d -> new DeviceResponse(d.getId(), d.getCode(), d.getName(), d.getUser().getEmail()))
                 .toList();
-    }
-
-    public Optional<Device> findByCode(String code) {
-        return deviceRepository.findByCode(code);
     }
 
 }

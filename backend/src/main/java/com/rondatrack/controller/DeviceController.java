@@ -1,5 +1,7 @@
 package com.rondatrack.controller;
 
+import com.rondatrack.dto.DeviceRequest;
+import com.rondatrack.dto.DeviceResponse;
 import com.rondatrack.model.Device;
 import com.rondatrack.security.JwtUtil;
 import com.rondatrack.service.DeviceService;
@@ -13,26 +15,20 @@ import java.util.List;
 public class DeviceController {
 
     private final DeviceService deviceService;
-    private final JwtUtil jwtUtil;
 
-    public DeviceController(DeviceService deviceService, JwtUtil jwtUtil) {
+    public DeviceController(DeviceService deviceService) {
         this.deviceService = deviceService;
-        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping
-    public ResponseEntity<Device> register(@RequestHeader("Authorization") String token, @RequestBody Device device) {
-        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
-        Device newDevice = deviceService.createDevice(device.getCode(), device.getName(), email);
-        return ResponseEntity.ok(newDevice);
+    public ResponseEntity<Void> register(@RequestBody DeviceRequest request) {
+        deviceService.create(request);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Device>> listAll(@RequestHeader("Authorization") String token) {
-        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
-        boolean isAdmin = jwtUtil.extractRoles(token.replace("Bearer ", "")).contains("ADMIN");
-        List<Device> devices = deviceService.listAll(email, isAdmin);
-        return ResponseEntity.ok(devices);
+    public ResponseEntity<List<DeviceResponse>> list() {
+        return ResponseEntity.ok(deviceService.listAll());
     }
 
 }
