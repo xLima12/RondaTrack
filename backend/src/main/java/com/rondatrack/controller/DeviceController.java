@@ -2,8 +2,6 @@ package com.rondatrack.controller;
 
 import com.rondatrack.dto.DeviceRequest;
 import com.rondatrack.dto.DeviceResponse;
-import com.rondatrack.model.Device;
-import com.rondatrack.security.JwtUtil;
 import com.rondatrack.service.DeviceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

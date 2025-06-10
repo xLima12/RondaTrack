@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 
@@ -11,15 +12,15 @@ import java.util.Date;
 public class JwtUtil {
 
     private static final String SECRET = "CHAVE_SUPER_SECRETA";
-    private static final long EXPIRATION = 86400000;
 
     public String generateToken(String email, String role) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         String issuer = "RondaTrack";
+        var expiresIn = Instant.now().plus(Duration.ofHours(2));
         return JWT.create()
                 .withIssuer(issuer)
                 .withIssuedAt(new Date())
-                .withExpiresAt(Instant.ofEpochSecond(EXPIRATION))
+                .withExpiresAt(expiresIn)
                 .withSubject(email)
                 .withClaim("role", role)
                 .sign(algorithm);
@@ -30,27 +31,17 @@ public class JwtUtil {
     }
 
     public String extractRoles(String token) {
-        return JWT.decode(token).getClaim("role").toString();
+        return JWT.decode(token).getClaim("role").asString();
     }
 
     public boolean isValidToken(String token) {
         try {
-          var email = JWT.decode(token).getSubject();
-          var role = JWT.decode(token).getClaim("role").toString();
+            var verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+            verifier.verify(token);
 
-          if(email == null || email.isEmpty()) {
-              return false;
-          }
-
-          if(role == null || role.isEmpty()) {
-              return false;
-          }
-
-          var verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
-
-          return !email.equals(verifier.verify(token).getSubject());
+            return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
